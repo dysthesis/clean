@@ -12,16 +12,21 @@
   buildEnv,
   ...
 }:
-  unwrapped = rustPlatform.buildRustPackage rec {
-    name = "clean";
-    version = "0.1.0";
-    
-    nativeBuildInputs = [
-      cargo
-      rustc
-      pkg-config
-    ];
+rustPlatform.buildRustPackage rec {
+  name = "clean";
+  version = "0.1.0";
 
-    src = ../../.;
-    cargoLock.lockFile = "${src}/Cargo.lock";
-  }
+  nativeBuildInputs = [
+    cargo
+    rustc
+    pkg-config
+  ];
+
+  RUSTFLAGS = [
+    "-Zlocation-detail=none"
+    "-Zfmt-debug=none"
+  ];
+
+  src = ../../.;
+  cargoLock.lockFile = "${src}/Cargo.lock";
+}
