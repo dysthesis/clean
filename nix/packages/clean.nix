@@ -1,32 +1,25 @@
 {
-  self,
-  lib,
-  pkgs,
   rustPlatform,
-  symlinkJoin,
-  cargo,
-  rustc,
-  luajit,
   pkg-config,
-  makeWrapper,
-  buildEnv,
+  rust-bin,
   ...
-}:
-rustPlatform.buildRustPackage rec {
-  name = "clean";
-  version = "0.1.0";
+}: let
+  nightlyToolchain = rust-bin.selectLatestNightlyWith (toolchain: toolchain.minimal);
+in
+  rustPlatform.buildRustPackage rec {
+    name = "clean";
+    version = "0.1.0";
 
-  nativeBuildInputs = [
-    cargo
-    rustc
-    pkg-config
-  ];
+    nativeBuildInputs = [
+      pkg-config
+      nightlyToolchain
+    ];
 
-  RUSTFLAGS = [
-    "-Zlocation-detail=none"
-    "-Zfmt-debug=none"
-  ];
+    RUSTFLAGS = [
+      "-Zlocation-detail=none"
+      "-Zfmt-debug=none"
+    ];
 
-  src = ../../.;
-  cargoLock.lockFile = "${src}/Cargo.lock";
-}
+    src = ../../.;
+    cargoLock.lockFile = "${src}/Cargo.lock";
+  }

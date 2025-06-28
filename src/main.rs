@@ -2,7 +2,7 @@ use dom_smoothie::{Readability, TextMode};
 use std::{env, fs::read_to_string};
 use url::Url;
 
-fn main() -> anyhow::Result<()> {
+fn main() {
     let args: Vec<String> = env::args().collect();
     let mut uri = None;
     let mut text_mode: TextMode = TextMode::Formatted;
@@ -20,13 +20,15 @@ fn main() -> anyhow::Result<()> {
     let content = match Url::parse(uri.as_str()) {
         Ok(res) => {
             let content = ureq::get(res.as_str())
-                .call()?
+                .call()
+                .expect("Failed to fetch URL!")
                 .body_mut()
-                .read_to_string()?;
+                .read_to_string()
+                .expect("Failed to read the URL's contents to string!");
             url = Some(res.to_string());
             content
         }
-        Err(_) => read_to_string(uri)?,
+        Err(_) => read_to_string(uri).expect("Failed to read the path to string!"),
     };
 
     let res = Readability::new(
@@ -36,12 +38,12 @@ fn main() -> anyhow::Result<()> {
             text_mode,
             ..Default::default()
         }),
-    )?
-    .parse()?
+    )
+    .expect("Failed to initialise Readability!")
+    .parse()
+    .expect("Failed to parse the content as HTML!")
     .text_content
     .to_string();
 
     println!("{res}");
-
-    Ok(())
 }
