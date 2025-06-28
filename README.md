@@ -11,7 +11,6 @@ clean $PATH_OR_URL
 ### Printing the result as Markdown
 
 ```bash
-```bash
 clean $PATH_OR_URL --markdown
 ```
 ```
