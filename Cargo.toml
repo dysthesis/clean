@@ -5,8 +5,8 @@ edition = "2024"
 
 [dependencies]
 dom_smoothie = { version = "0.11.0", default-features = false }
-ureq = "3.0.12"
-url = "2.5.4"
+ureq = { version = "3.0.12", default-features = false, features = ["rustls"] }
+url = {version = "2.5.4", default-features = false}
 
 [profile.release]
 strip = "debuginfo"
