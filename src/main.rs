@@ -1,4 +1,3 @@
-use anyhow::anyhow;
 use dom_smoothie::{Readability, TextMode};
 use std::{env, fs::read_to_string};
 use url::Url;
@@ -15,7 +14,7 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
-    let uri = uri.ok_or_else(|| anyhow!("Failed to get the URL or path to the HTML document"))?;
+    let uri = uri.expect("Failed to get the URL or path to the HTML document");
 
     let mut url = None;
     let content = match Url::parse(uri.as_str()) {
