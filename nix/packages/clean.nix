@@ -1,25 +1,24 @@
 {
+  rustToolchains,
   rustPlatform,
   pkg-config,
-  rust-bin,
+  cacert,
+  makeWrapper,
   ...
 }: let
-  nightlyToolchain = rust-bin.selectLatestNightlyWith (toolchain: toolchain.minimal);
+  inherit (rustToolchains) nightly;
 in
   rustPlatform.buildRustPackage rec {
-    name = "clean";
+    pname = "clean";
     version = "0.1.0";
-
-    nativeBuildInputs = [
-      pkg-config
-      nightlyToolchain
-    ];
-
-    RUSTFLAGS = [
-      "-Zlocation-detail=none"
-      "-Zfmt-debug=none"
-    ];
-
     src = ../../.;
     cargoLock.lockFile = "${src}/Cargo.lock";
+
+    nativeBuildInputs = [pkg-config nightly makeWrapper];
+    buildInputs = [cacert];
+
+    postInstall = ''
+      wrapProgram $out/bin/clean \
+        --set SSL_CERT_FILE ${cacert}/etc/ssl/certs/ca-bundle.crt
+    '';
   }
